@@ -9,7 +9,7 @@ from scaffoldmaker.utils.eft_utils import *
 from scaffoldmaker.utils.zinc_utils import *
 from scaffoldmaker.utils.eftfactory_tricubichermite import eftfactory_tricubichermite
 from opencmiss.zinc.element import Element, Elementbasis, Elementfieldtemplate
-from opencmiss.zinc.field import Field
+from opencmiss.zinc.field import Field, FieldGroup
 from opencmiss.zinc.node import Node
 
 class MeshType_3d_heartventricles1:
@@ -138,6 +138,15 @@ class MeshType_3d_heartventricles1:
 
         fm = region.getFieldmodule()
         fm.beginChange()
+        
+        # create our FMA group fields ready for use
+        fmaIds = ['FMA_7098', 'FMA_7096', 'FMA_7218', 'FMA_7101', 'FMA_7097', 'FMA_7219', 'FMA_7164', 'FMA_84628']
+        for fmaTerm in fmaIds:
+            f = fm.createFieldGroup()
+            f.setName(fmaTerm)
+            f.setManaged(True)
+            f.setSubelementHandlingMode(FieldGroup.SUBELEMENT_HANDLING_MODE_FULL)
+        
         coordinates = getOrCreateCoordinateField(fm)
 
         nodes = fm.findNodesetByFieldDomainType(Field.DOMAIN_TYPE_NODES)
