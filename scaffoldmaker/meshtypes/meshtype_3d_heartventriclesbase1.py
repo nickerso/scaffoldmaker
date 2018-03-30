@@ -661,6 +661,8 @@ class MeshType_3d_heartventriclesbase1(object):
         #################
         # Create elements
         #################
+        lvBaseElements = []
+        rvBaseElements = []
 
         elementIdentifier = startElementIdentifier = getMaximumElementIdentifier(mesh) + 1
 
@@ -850,6 +852,7 @@ class MeshType_3d_heartventriclesbase1(object):
             else:
                 result3 = 1
             #print('create element lv', elementIdentifier, result, result2, result3, nids[e])
+            lvBaseElements.append(element)
             elementIdentifier += 1
 
         # RV base elements
@@ -962,6 +965,7 @@ class MeshType_3d_heartventriclesbase1(object):
             else:
                 result3 = 1
             #print('create element rv', elementIdentifier, result, result2, result3, nids[e])
+            rvBaseElements.append(element)
             elementIdentifier += 1
 
         # LV outlet ring elements: linear in xi3
@@ -995,7 +999,19 @@ class MeshType_3d_heartventriclesbase1(object):
             nids = [ lvring_nids[e], lvring_nids[e2], lvOutletNodeId[0][e], lvOutletNodeId[0][e2], lvOutletNodeId[1][e], lvOutletNodeId[1][e2] ]
             result2 = element.setNodesByIdentifier(eft1, nids)
             #print('create element lv outlet', elementIdentifier, result, result2, nids)
+            lvBaseElements.append(element)
             elementIdentifier += 1
 
+        fm.endChange()
+        
+        # add the base elements to the appropriate groups - can this go in the begin/endChange above?
+        fm.beginChange()
+        groupField = fm.findFieldByName('FMA_7101').castGroup()
+        elementGroupField = groupField.getFieldElementGroup(mesh)
+        if not elementGroupField.isValid():
+            elementGroupField = groupField.createFieldElementGroup(mesh)
+        meshGroup = elementGroupField.getMeshGroup()
+        for elem in lvBaseElements:
+            meshGroup.addElement(elem)
         fm.endChange()
 
