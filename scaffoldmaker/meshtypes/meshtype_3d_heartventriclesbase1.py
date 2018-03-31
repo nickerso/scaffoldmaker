@@ -1013,5 +1013,13 @@ class MeshType_3d_heartventriclesbase1(object):
         meshGroup = elementGroupField.getMeshGroup()
         for elem in lvBaseElements:
             meshGroup.addElement(elem)
+        
+        groupField = fm.findFieldByName('FMA_7098').castGroup()
+        elementGroupField = groupField.getFieldElementGroup(mesh)
+        if not elementGroupField.isValid():
+            elementGroupField = groupField.createFieldElementGroup(mesh)
+        meshGroup = elementGroupField.getMeshGroup()
+        for elem in rvBaseElements:
+            meshGroup.addElement(elem)
         fm.endChange()
 
