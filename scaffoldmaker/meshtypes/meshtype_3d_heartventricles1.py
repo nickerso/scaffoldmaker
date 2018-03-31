@@ -146,7 +146,7 @@ class MeshType_3d_heartventricles1:
             f.setName(fmaTerm)
             f.setManaged(True)
             f.setSubelementHandlingMode(FieldGroup.SUBELEMENT_HANDLING_MODE_FULL)
-        
+
         coordinates = getOrCreateCoordinateField(fm)
 
         nodes = fm.findNodesetByFieldDomainType(Field.DOMAIN_TYPE_NODES)
@@ -158,6 +158,19 @@ class MeshType_3d_heartventricles1:
         nodetemplate.setValueNumberOfVersions(coordinates, -1, Node.VALUE_LABEL_D_DS3, 1)
 
         mesh = fm.findMeshByDimension(3)
+
+        # and add the LV elements from above
+        groupField = fm.findFieldByName('FMA_7101').castGroup()
+        elementGroupField = groupField.getFieldElementGroup(mesh)
+        if not elementGroupField.isValid():
+            elementGroupField = groupField.createFieldElementGroup(mesh)
+        meshGroup = elementGroupField.getMeshGroup()
+        elementIter = mesh.createElementiterator()
+        element = elementIter.next()
+        while element.isValid():
+            meshGroup.addElement(element)
+            element = elementIter.next()
+
 
         cache = fm.createFieldcache()
 
@@ -543,6 +556,7 @@ class MeshType_3d_heartventricles1:
         rv_nor = (elementsCountAcrossSeptum + 1)
         rv_now = (elementsCountUpRV + 1)*rv_nor
 
+        rvElements = []
         for n2 in range(-1, elementsCountUpRV):
 
             for n1 in range(-1, elementsCountAcrossSeptum + 1):
@@ -668,5 +682,15 @@ class MeshType_3d_heartventricles1:
                     element.setScaleFactors(eft1, [-1.0])
                 #print('RV element create', elementIdentifier, result1, result2, nodeIdentifiers)
                 elementIdentifier += 1
+                rvElements.append(element)
+        
+        # add the RV elements to our group
+        groupField = fm.findFieldByName('FMA_7098').castGroup()
+        elementGroupField = groupField.getFieldElementGroup(mesh)
+        if not elementGroupField.isValid():
+            elementGroupField = groupField.createFieldElementGroup(mesh)
+        meshGroup = elementGroupField.getMeshGroup()
+        for elem in rvElements:
+            meshGroup.addElement(elem)
 
         fm.endChange()
