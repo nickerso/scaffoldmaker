@@ -16,6 +16,7 @@ from meshtypes.meshtype_3d_sphereshell1 import MeshType_3d_sphereshell1
 from meshtypes.meshtype_3d_sphereshellseptum1 import MeshType_3d_sphereshellseptum1
 from meshtypes.meshtype_3d_tube1 import MeshType_3d_tube1
 from meshtypes.meshtype_3d_tubeseptum1 import MeshType_3d_tubeseptum1
+from opencmiss.zinc.field import FieldGroup
 
 class Scaffoldmaker(object):
 
@@ -42,3 +43,11 @@ class Scaffoldmaker(object):
 
     def getDefaultMeshType(self):
         return MeshType_3d_box1
+    
+    @staticmethod
+    def defineAnnotationGroupFields(fieldModule, groupNames):
+        for groupName in groupNames:
+            f = fieldModule.createFieldGroup()
+            f.setName(groupName)
+            f.setManaged(True)
+            f.setSubelementHandlingMode(FieldGroup.SUBELEMENT_HANDLING_MODE_FULL)

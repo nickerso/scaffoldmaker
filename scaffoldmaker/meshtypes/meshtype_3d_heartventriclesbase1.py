@@ -87,6 +87,12 @@ class MeshType_3d_heartventriclesbase1(object):
                     options[key] = 0.0
 
     @staticmethod
+    def getAnnotationGroupNames():
+        # these are the annotation groups that this scaffold will contain
+        fmaIds = ['FMA_7098', 'FMA_7096', 'FMA_7218', 'FMA_7101', 'FMA_7097', 'FMA_7219', 'FMA_7164', 'FMA_84628']
+        return fmaIds
+
+    @staticmethod
     def generateMesh(region, options):
         """
         :param region: Zinc region to define model in. Must be empty.

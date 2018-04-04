@@ -139,14 +139,6 @@ class MeshType_3d_heartventricles1:
         fm = region.getFieldmodule()
         fm.beginChange()
         
-        # create our FMA group fields ready for use
-        fmaIds = ['FMA_7098', 'FMA_7096', 'FMA_7218', 'FMA_7101', 'FMA_7097', 'FMA_7219', 'FMA_7164', 'FMA_84628']
-        for fmaTerm in fmaIds:
-            f = fm.createFieldGroup()
-            f.setName(fmaTerm)
-            f.setManaged(True)
-            f.setSubelementHandlingMode(FieldGroup.SUBELEMENT_HANDLING_MODE_FULL)
-
         coordinates = getOrCreateCoordinateField(fm)
 
         nodes = fm.findNodesetByFieldDomainType(Field.DOMAIN_TYPE_NODES)
@@ -683,7 +675,7 @@ class MeshType_3d_heartventricles1:
                 #print('RV element create', elementIdentifier, result1, result2, nodeIdentifiers)
                 elementIdentifier += 1
                 rvElements.append(element)
-        
+
         # add the RV elements to our group
         groupField = fm.findFieldByName('FMA_7098').castGroup()
         elementGroupField = groupField.getFieldElementGroup(mesh)
